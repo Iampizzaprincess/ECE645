@@ -38,28 +38,42 @@ function LLR = BCJRdec(cwN,Eb,sigma,aPriori)
             p0 = .5; 
             L = log(p1/p0);
         else
-            % do something here when I have to turbo code
+            L = aPriori(k);
         end
         C1 = exp(-L/ 2) / (1+exp(-L/2));
+%         if isnan(C1)
+%             if L<0
+%                 C1 = -realmax;
+%             else
+%                 C1 = realmax; 
+%             end
+%         end
         C = C1 * C2; 
         
         % compute each gamma for the forward probability
         % 00 to 00 (input bit -1)
-        gam0000(k) = exp(-1 * L/2) * exp(Eb/(sigma^2)*( y_t1*(-1)+y_t2*(-1)));
+        gam0000(k) = C*exp(-1 * L/2) * exp(Eb/(sigma^2)*( y_t1*(-1)+y_t2*(-1)));
+        
         % 00 to 10 (input bit +1)
-        gam0010(k) = exp(1 * L/2) * exp(Eb/(sigma^2)*( y_t1*(1)+y_t2*(1)));
+        gam0010(k) = C*exp(1 * L/2) * exp(Eb/(sigma^2)*( y_t1*(1)+y_t2*(1)));
+        
         % 10 to 01 (input bit -1)
-        gam1001(k) = exp(-1 * L/2) * exp(Eb/(sigma^2)*( y_t1*(-1)+y_t2*(-1)));
+        gam1001(k) = C*exp(-1 * L/2) * exp(Eb/(sigma^2)*( y_t1*(-1)+y_t2*(-1)));
+
         % 10 to 11 (input bit +1)
-        gam1011(k) = exp(1 * L/2) * exp(Eb/(sigma^2)*( y_t1*(1)+y_t2*(1)));
+        gam1011(k) = C*exp(1 * L/2) * exp(Eb/(sigma^2)*( y_t1*(1)+y_t2*(1)));
+        
         % 01 to 00 (input bit -1)
-        gam0100(k) = exp(-1 * L/2) * exp(Eb/(sigma^2)*( y_t1*(1)+y_t2*(-1)));
+        gam0100(k) = C*exp(-1 * L/2) * exp(Eb/(sigma^2)*( y_t1*(1)+y_t2*(-1)));
+
         % 01 to 10 (input bit +1)
-        gam0110(k) =  exp(1 * L/2) * exp(Eb/(sigma^2)*( y_t1*(-1)+y_t2*(1)));
+        gam0110(k) =  C*exp(1 * L/2) * exp(Eb/(sigma^2)*( y_t1*(-1)+y_t2*(1)));
+
         % 11 to 01 (input bit -1)
-        gam1101(k) = exp(-1 * L/2) * exp(Eb/(sigma^2)*( y_t1*(1)+y_t2*(-1)));
+        gam1101(k) = C*exp(-1 * L/2) * exp(Eb/(sigma^2)*( y_t1*(1)+y_t2*(-1)));
+        
         % 11 to 11 (input bit +1)
-        gam1111(k) = exp(1 * L/2) * exp(Eb/(sigma^2)*( y_t1*(-1)+y_t2*(1)));
+        gam1111(k) = C*exp(1 * L/2) * exp(Eb/(sigma^2)*( y_t1*(-1)+y_t2*(1)));
         
         % compute the alphas
         % state 00 alpha
